@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RLNET;
 using System.Drawing;
+using RLNETConsoleGame.Core;
 
 namespace RLNETConsoleGame
 {
@@ -65,17 +66,17 @@ namespace RLNETConsoleGame
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
             // this block of code sets the color and names/ labels in the sub COnsoles within the RootConsole
-            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, RLColor.Black);
-            _mapConsole.Print(1, 1, "Map", RLColor.White);
+            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
+            _mapConsole.Print(1, 1, "Map", Colors.TextHeading);         //Colors here are taken from the colors.cs instead of using RLColor.Black
 
-            _messagesConsole.SetBackColor(0, 0, _messagesWidth, _messagesHeight, RLColor.Gray);
-            _messagesConsole.Print(1, 1, "Messages", RLColor.White);
+            _messagesConsole.SetBackColor(0, 0, _messagesWidth, _messagesHeight, Palatte.DbDeepWater);
+            _messagesConsole.Print(1, 1, "Messages", Colors.TextHeading);        // color here is taken from the palatte.cs
 
-            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, RLColor.Brown);
-            _statsConsole.Print(1, 1, "Stats", RLColor.White);
+            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Palatte.DbOldStone);
+            _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
 
-            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, RLColor.Cyan);
-            _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
+            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palatte.DbWood);
+            _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
 
         }
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
