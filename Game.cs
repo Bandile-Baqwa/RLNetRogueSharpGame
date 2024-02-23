@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using RLNET;
 using System.Drawing;
 using RLNETConsoleGame.Core;
+using RLNETConsoleGame.Systems;
 
 namespace RLNETConsoleGame
 {
     public class Game
     {
+        public static DungeonMap DungeonMap { get; private set; }
+
         // these fields are static and readonly cause the screen dimentions shouldnt be allow to change 
         private static readonly int _screenWidth = 100;
         private static readonly int _screenHeight = 70;
@@ -40,6 +43,9 @@ namespace RLNETConsoleGame
 
         public static void Main()
         {
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            DungeonMap = mapGenerator.CreateMap();
+
             //juat linkiing up the bitmap file
             //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
 
@@ -88,6 +94,7 @@ namespace RLNETConsoleGame
             RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
 
             _rootConsole.Draw();
+            DungeonMap.Draw(_mapConsole);
         }
     }
 }

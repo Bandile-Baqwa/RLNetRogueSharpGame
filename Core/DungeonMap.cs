@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RLNETConsoleGame.Core
 {
-    internal class DungeonMap : Map    // this map that  was inherited from  using RogueSharp 
+    public class DungeonMap : Map    // this map that  was inherited from  using RogueSharp 
     {
         // this draw method will be called everytime the map is updated and wil render all the items 
         public void Draw(RLConsole mapConsole)
