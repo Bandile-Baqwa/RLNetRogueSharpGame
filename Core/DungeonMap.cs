@@ -14,7 +14,7 @@ namespace RLNETConsoleGame.Core
         public void Draw(RLConsole mapConsole)
         {
             mapConsole.Clear();
-            foreach (Cell cell in GetAllCells())
+            foreach (Cell cell in GetAllCells())        // this loop makes the bottom method happen for every cell
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
