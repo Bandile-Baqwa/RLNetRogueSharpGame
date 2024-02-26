@@ -75,6 +75,7 @@
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Palatte.cs" />
+    <Compile Include="Core\Player.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Interfaces\IActor.cs" />
     <Compile Include="Interfaces\IDrawable.cs" />
