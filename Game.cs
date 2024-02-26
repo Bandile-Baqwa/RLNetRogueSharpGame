@@ -12,8 +12,7 @@ namespace RLNETConsoleGame
 {
     public class Game
     {
-        public static DungeonMap DungeonMap { get; private set; }
-        public static Player Player { get; private set; }
+       
 
         // these fields are static and readonly cause the screen dimentions shouldnt be allow to change 
         private static readonly int _screenWidth = 100;
@@ -41,12 +40,13 @@ namespace RLNETConsoleGame
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
 
+        public static Player Player { get; private set; }
+        public static DungeonMap DungeonMap { get; private set; }
+
 
         public static void Main()
         {
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
-            DungeonMap = mapGenerator.CreateMap();
-            Player = new Player();
+            
 
             //juat linkiing up the bitmap file
             //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
@@ -62,13 +62,17 @@ namespace RLNETConsoleGame
             _statsConsole = new RLConsole(_statsWidth, _statsHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
+            Player = new Player();
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            DungeonMap = mapGenerator.CreateMap();
+            DungeonMap.UpdatePlayerFieldOfView();
+
             //this set ups the handler to update
             _rootConsole.Update += OnRootConsoleUpdate;
 
             //this does the same as above but renders it 
             _rootConsole.Render += OnRootConsoleRender;
             _rootConsole.Run();
-            DungeonMap.UpdatePlayerFieldOfView();
 
         }
 
@@ -90,15 +94,18 @@ namespace RLNETConsoleGame
         }
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
+
+            _rootConsole.Draw();
+            Player.Draw(_mapConsole, DungeonMap);
+
             // this block of code transfers the information from the sub consoles to RootConsole (BLIT)
             RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
             RLConsole.Blit(_statsConsole, 0, 0, _statsWidth, _statsHeight, _rootConsole, _mapWidth, 0);
             RLConsole.Blit(_messagesConsole, 0, 0, _messagesWidth, _messagesHeight, _rootConsole, 0, _screenHeight - _messagesHeight);
             RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
 
-            _rootConsole.Draw();
+            
             DungeonMap.Draw(_mapConsole);
-            Player.Draw(_mapConsole, DungeonMap);
         }
     }
 }

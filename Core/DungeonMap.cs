@@ -41,7 +41,7 @@ namespace RLNETConsoleGame.Core
                     console.Set(cell.X, cell.Y, Colors.WallFov,Colors.WallBackgroundFov,'#');
                 }
             }
-            if (!IsInFov(cell.X, cell.Y))  // the colors the cells (floor and wall) need to be when not in FOV
+            else   // the colors the cells (floor and wall) need to be when not in FOV
             {
                 if (cell.IsWalkable)
                 {

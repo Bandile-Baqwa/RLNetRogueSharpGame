@@ -30,6 +30,7 @@ namespace RLNETConsoleGame.Systems
             {
                 _map.SetCellProperties(cell.X, cell.Y, true, true, true); //the end properties are bool for is wallkable, transparent & explored
             }
+
             foreach (Cell cell in _map.GetCellsInRows(0, _height - 1))
             {
                 _map.SetCellProperties(cell.X, cell.Y, false, false, true);

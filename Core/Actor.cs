@@ -26,13 +26,14 @@ namespace RLNETConsoleGame.Core
             {
                 return;
             }
+
             if (map.IsInFov(X, Y))          //draw the actor , symbol and color in FOV 
             {
                 console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbol);
             }
-            else
+            else 
             {
-                console.Set(X, Y, Color, Colors.FloorBackground, '.');      //draw the normal color and floor symbol of floor outside of FOV
+                console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');      //draw the normal color and floor symbol of floor outside of FOV
             }
 
         }
