@@ -20,5 +20,7 @@ namespace RLNETConsoleGame.Core
         public static RLColor WallFov = Palatte.SecondaryLighter;
 
         public static RLColor TextHeading = Palatte.DbLight;
+
+        public static RLColor Player = Palatte.DbLight;
     }
 }
