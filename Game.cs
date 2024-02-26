@@ -13,6 +13,7 @@ namespace RLNETConsoleGame
     public class Game
     {
         public static DungeonMap DungeonMap { get; private set; }
+        public static Player Player { get; private set; }
 
         // these fields are static and readonly cause the screen dimentions shouldnt be allow to change 
         private static readonly int _screenWidth = 100;
@@ -45,6 +46,7 @@ namespace RLNETConsoleGame
         {
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
             DungeonMap = mapGenerator.CreateMap();
+            Player = new Player();
 
             //juat linkiing up the bitmap file
             //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
@@ -66,6 +68,7 @@ namespace RLNETConsoleGame
             //this does the same as above but renders it 
             _rootConsole.Render += OnRootConsoleRender;
             _rootConsole.Run();
+            DungeonMap.UpdatePlayerFieldOfView();
 
         }
 
@@ -95,6 +98,7 @@ namespace RLNETConsoleGame
 
             _rootConsole.Draw();
             DungeonMap.Draw(_mapConsole);
+            Player.Draw(_mapConsole, DungeonMap);
         }
     }
 }

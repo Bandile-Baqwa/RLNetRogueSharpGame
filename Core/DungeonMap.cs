@@ -53,5 +53,20 @@ namespace RLNETConsoleGame.Core
                 }
             }
         }
+
+        public void UpdatePlayerFieldOfView()       // this is created so every time you move the player the FOV is updated 
+        {
+            Player player = Game.Player;            //this is taken from the Player property (getter setter) in the Game.cs
+
+            ComputeFov(player.X, player.Y, player.Awareness, true);     //ComputeFOV is bulit in RLNet,, it slots in the properties form the player.cs and updated them according to the pos of Player
+
+            foreach (Cell cell in GetAllCells())    //marking all the cells in FOV as being explored to have the colors ,symbols and etc active
+            {
+                if (IsInFov(cell.X, cell.Y))
+                {
+                SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                }
+            }
+        }
     }
 }
