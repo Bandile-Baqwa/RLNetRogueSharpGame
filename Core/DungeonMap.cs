@@ -68,5 +68,31 @@ namespace RLNETConsoleGame.Core
                 }
             }
         }
+
+        public bool SetActorPosition(Actor actor, int x, int y)         // returns true if actor can be placed on call and false if not 
+        {
+            if (GetCell(x, y).IsWalkable)           //only allows the actor placement if thwe actotr is walkable
+            {
+                SetIsWalkable(actor.X, actor.Y, true);  // makes the previous cell that the actor was on now walkble 
+
+                actor.X = x;                            //this updates the actors position 
+                actor.Y = y;
+
+                SetIsWalkable(actor.X, actor.Y, false); //the actors current cell position is not walkable 
+
+                if (actor is Player)                //if the player is repositioned then we have to update the Players FOV
+                {
+                    UpdatePlayerFieldOfView();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public void SetIsWalkable(int x, int y, bool isWalkable)        // this bool method helps set the isWalkable property on a cell being true or false 
+        {
+            Cell cell = (Cell)GetCell(x, y);
+            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
     }
 }
