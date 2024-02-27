@@ -42,9 +42,12 @@ namespace RLNETConsoleGame
         private static RLConsole _inventoryConsole;
 
         private static bool _renderRequired = true;
+
+        private static int _steps = 0;                      //for testing MessageLog purposes *NOT FOR PRODUCTION*
         public static Player Player { get; set; }
         public static DungeonMap DungeonMap { get; private set; }
         public static CommandSystem CommandSystem { get; private set; }
+        public static MessageLog MessageLog { get; private set; }
         public static IRandom Random { get; set; }      //this will be used thru out the game to generate random numbers (rogueSharp - Singleton )
 
         public static void Main()
@@ -54,6 +57,11 @@ namespace RLNETConsoleGame
 
             //the title name will includde the seed used to generate the level
             string consoleTitle = $"Bandiles RLNet Console - Level 1 - Seed{seed}";
+
+            //create a new MessageLog and print the random seeed to generate the level
+            MessageLog = new MessageLog();
+            MessageLog.Add("Archer arrives on level 1");
+            MessageLog.Add($"Level created with seed '{seed}'");
 
             //juat linkiing up the bitmap file
             //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
@@ -112,6 +120,7 @@ namespace RLNETConsoleGame
             }
             if (didPlayerAct)
             {
+                MessageLog.Add($"Step # {++_steps}");
                 _renderRequired = true;
             }
 
@@ -120,8 +129,9 @@ namespace RLNETConsoleGame
             //_mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
             //_mapConsole.Print(1, 1, "Map", Colors.TextHeading);         //Colors here are taken from the colors.cs instead of using RLColor.Black
 
-            _messagesConsole.SetBackColor(0, 0, _messagesWidth, _messagesHeight, Palatte.DbDeepWater);
-            _messagesConsole.Print(1, 1, "Messages", Colors.TextHeading);        // color here is taken from the palatte.cs
+            //_messagesConsole.SetBackColor(0, 0, _messagesWidth, _messagesHeight, Palatte.DbDeepWater);
+            //_messagesConsole.Print(1, 1, "Messages", Colors.TextHeading);        // color here is taken from the palatte.cs
+            
 
             _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Palatte.DbOldStone);
             _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
@@ -136,6 +146,7 @@ namespace RLNETConsoleGame
             {
              DungeonMap.Draw(_mapConsole);
             Player.Draw(_mapConsole, DungeonMap);
+             MessageLog.Draw(_messagesConsole);
                 
 
             // this block of code transfers the information from the sub consoles to RootConsole (BLIT)
