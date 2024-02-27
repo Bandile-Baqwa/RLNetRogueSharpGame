@@ -10,6 +10,11 @@ namespace RLNETConsoleGame.Core
 {
     public class DungeonMap : Map    // this map that  was inherited from  using RogueSharp 
     {
+        public List<Rectangle> Rooms;
+        public DungeonMap()                 //this jsut initializes the new list of rooms when the map is created 
+        {
+            Rooms = new List<Rectangle>();
+        }
         // this draw method will be called everytime the map is updated and wil render all the items 
         public void Draw(RLConsole mapConsole)
         {

@@ -7,6 +7,7 @@ using RLNET;
 using System.Drawing;
 using RLNETConsoleGame.Core;
 using RLNETConsoleGame.Systems;
+using RogueSharp.Random;
 
 namespace RLNETConsoleGame
 {
@@ -44,16 +45,18 @@ namespace RLNETConsoleGame
         public static Player Player { get; private set; }
         public static DungeonMap DungeonMap { get; private set; }
         public static CommandSystem CommandSystem { get; private set; }
-
+        public static IRandom Random { get; set; }      //this will be used thru out the game to generate random numbers (rogueSharp - Singleton )
 
         public static void Main()
         {
-            
+            int seed = (int)DateTime.UtcNow.Ticks;     //this establishes the seed for the random number gnerator from the current time
+            Random = new DotNetRandom(seed);        // this will produce a unique seed everytime a new game is stared 
+
+            //the title name will includde the seed used to generate the level
+            string consoleTitle = $"Bandiles RLNet Console - Level 1 - Seed{seed}";
 
             //juat linkiing up the bitmap file
             //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
-
-            string consoleTitle = "Bandiles RLNet Console - Level 1";
 
             //telling the RLNet to use the bitmap and setting the dimentions for the tile which are 8x8
             _rootConsole = new RLRootConsole("C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\terminal8x8.png", _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
@@ -65,7 +68,7 @@ namespace RLNETConsoleGame
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
             Player = new Player();
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7);    //the numbers are the paramerters for the Max Rooms and Size and Min size
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
             CommandSystem = new CommandSystem();
