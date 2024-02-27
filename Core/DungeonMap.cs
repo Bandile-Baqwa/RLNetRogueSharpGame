@@ -26,6 +26,13 @@ namespace RLNETConsoleGame.Core
 
         }
 
+        public void AddPlayer(Player player)
+        {
+            Game.Player = player;
+            SetIsWalkable(player.X, player.Y, false);
+            UpdatePlayerFieldOfView();
+        }
+
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
         {
             if (!cell.IsExplored)

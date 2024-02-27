@@ -42,7 +42,7 @@ namespace RLNETConsoleGame
         private static RLConsole _inventoryConsole;
 
         private static bool _renderRequired = true;
-        public static Player Player { get; private set; }
+        public static Player Player { get; set; }
         public static DungeonMap DungeonMap { get; private set; }
         public static CommandSystem CommandSystem { get; private set; }
         public static IRandom Random { get; set; }      //this will be used thru out the game to generate random numbers (rogueSharp - Singleton )
@@ -67,7 +67,7 @@ namespace RLNETConsoleGame
             _statsConsole = new RLConsole(_statsWidth, _statsHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
-            Player = new Player();
+            
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7);    //the numbers are the paramerters for the Max Rooms and Size and Min size
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
