@@ -12,7 +12,7 @@ namespace RLNETConsoleGame
 {
     public class Game
     {
-       
+        
 
         // these fields are static and readonly cause the screen dimentions shouldnt be allow to change 
         private static readonly int _screenWidth = 100;
@@ -40,8 +40,10 @@ namespace RLNETConsoleGame
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
 
+        private static bool _renderRequired = true;
         public static Player Player { get; private set; }
         public static DungeonMap DungeonMap { get; private set; }
+        public static CommandSystem CommandSystem { get; private set; }
 
 
         public static void Main()
@@ -66,6 +68,7 @@ namespace RLNETConsoleGame
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
+            CommandSystem = new CommandSystem();
 
             //this set ups the handler to update
             _rootConsole.Update += OnRootConsoleUpdate;
@@ -78,9 +81,41 @@ namespace RLNETConsoleGame
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
+            bool didPlayerAct = false;
+            RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();          // this links the keyboard presses to the players movemenmts and COmmandSystem.MovePlayer() handels all the movement
+
+            if (keyPress != null)
+            {
+                if (keyPress.Key == RLKey.Up)
+                {
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                }
+                else if (keyPress.Key == RLKey.Down)
+                {
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                }
+                else if (keyPress.Key == RLKey.Left)
+                {
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                }
+                else if (keyPress.Key == RLKey.Right)
+                {
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                }
+                else if (keyPress.Key == RLKey.Escape)
+                {
+                    _rootConsole.Close();
+                }
+            }
+            if (didPlayerAct)
+            {
+                _renderRequired = true;
+            }
+
+
             // this block of code sets the color and names/ labels in the sub COnsoles within the RootConsole
-            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
-            _mapConsole.Print(1, 1, "Map", Colors.TextHeading);         //Colors here are taken from the colors.cs instead of using RLColor.Black
+            //_mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
+            //_mapConsole.Print(1, 1, "Map", Colors.TextHeading);         //Colors here are taken from the colors.cs instead of using RLColor.Black
 
             _messagesConsole.SetBackColor(0, 0, _messagesWidth, _messagesHeight, Palatte.DbDeepWater);
             _messagesConsole.Print(1, 1, "Messages", Colors.TextHeading);        // color here is taken from the palatte.cs
@@ -94,9 +129,11 @@ namespace RLNETConsoleGame
         }
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
-
-            _rootConsole.Draw();
+            if (_renderRequired)
+            {
+             DungeonMap.Draw(_mapConsole);
             Player.Draw(_mapConsole, DungeonMap);
+                
 
             // this block of code transfers the information from the sub consoles to RootConsole (BLIT)
             RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
@@ -104,8 +141,11 @@ namespace RLNETConsoleGame
             RLConsole.Blit(_messagesConsole, 0, 0, _messagesWidth, _messagesHeight, _rootConsole, 0, _screenHeight - _messagesHeight);
             RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
 
-            
-            DungeonMap.Draw(_mapConsole);
+                _rootConsole.Draw();
+
+
+                _renderRequired = false;
+            }
         }
     }
 }
