@@ -1,5 +1,7 @@
 ﻿using RLNETConsoleGame.Core;
 using RogueSharp;
+using RogueSharp.DiceNotation;
+using RLNETConsoleGame.Monsters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +81,7 @@ namespace RLNETConsoleGame.Systems
                 CreateRoom(room);
             }
             PlacePlayer();
+            PlaceMonsters();
             return _map;
         }
 
@@ -95,6 +98,34 @@ namespace RLNETConsoleGame.Systems
             player.Y = _map.Rooms[0].Center.Y;  //X and Y coordineates
 
             _map.AddPlayer(player);
+        }
+
+        private void PlaceMonsters()
+        {
+            foreach (var room in _map.Rooms)
+            {
+                if (Dice.Roll("1D10") < 7)      //roll 1 die with 10 sides but must less than 7 which gives it a 60% chance of monsters being in the room 
+                {
+                    //this will create between 1 and 4 monsters per room 
+                    var numberOfMonsters = Dice.Roll("1D4");
+                    for (int i = 0; i < numberOfMonsters; i++)
+                    {
+                        //now we need to fine a random walkable location to place each monster in each room
+                        Point randomRoomLocation = (Point)_map.GetRandomWalkableLocationInRoom(room);
+
+
+                        //in the rare occorance that a room doesnt have space to place a monster the bottom code will prevent a error
+                        if (randomRoomLocation != null)
+                        {
+                            var monster = Kobold.Create(1);
+                            monster.X = randomRoomLocation.X;
+                            monster.Y = randomRoomLocation.Y;
+                            _map.AddMonsters(monster);
+                        }
+                    }
+                }
+            }
+
         }
 
         private void CreateRoom(Rectangle room)

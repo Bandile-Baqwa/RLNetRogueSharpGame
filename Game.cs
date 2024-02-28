@@ -60,7 +60,7 @@ namespace RLNETConsoleGame
 
             //create a new MessageLog and print the random seeed to generate the level
             MessageLog = new MessageLog();
-            MessageLog.Add("Archer arrives on level 1");
+            MessageLog.Add("Agent Bands arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
             //juat linkiing up the bitmap file

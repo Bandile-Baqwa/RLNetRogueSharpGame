@@ -10,11 +10,14 @@ namespace RLNETConsoleGame.Core
 {
     public class DungeonMap : Map    // this map that  was inherited from  using RogueSharp 
     {
+        public readonly List<Monster> _monsters;
         public List<Rectangle> Rooms;
-        public DungeonMap()                 //this jsut initializes the new list of rooms when the map is created 
+        public DungeonMap()                 //this jsut initializes the new list of rooms & monsters when the map is created 
         {
+            _monsters = new List<Monster>();
             Rooms = new List<Rectangle>();
         }
+
         // this draw method will be called everytime the map is updated and wil render all the items 
         public void Draw(RLConsole mapConsole)
         {
@@ -22,6 +25,10 @@ namespace RLNETConsoleGame.Core
             foreach (Cell cell in GetAllCells())        // this loop makes the bottom method happen for every cell
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
+            }
+            foreach (Monster monster in _monsters)      //this iterates thru all the monsters on the map after the cells have been  drawn above
+            {
+                monster.Draw(mapConsole, this);
             }
 
         }
@@ -32,6 +39,55 @@ namespace RLNETConsoleGame.Core
             SetIsWalkable(player.X, player.Y, false);
             UpdatePlayerFieldOfView();
         }
+
+        public void AddMonsters(Monster monster)
+        {
+            _monsters.Add(monster);
+            //this sets that the monster is not walkable 
+            SetIsWalkable(monster.X, monster.Y, false);
+            
+        }
+
+        public void SetIsWalkable(int x, int y, bool isWalkable)        // this bool method helps set the isWalkable property on a cell being true or false 
+        {
+            Cell cell = (Cell)GetCell(x, y);
+            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
+
+
+        //this looks for a random place in the room thats walkable so the monster can spawn there 
+        public Point? GetRandomWalkableLocationInRoom(Rectangle room)
+        {
+            if (DoesRoomHaveWalkableSpace(room))
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    int x = Game.Random.Next(1, room.Width - 2) + room.X;
+                    int y = Game.Random.Next(1, room.Height - 2) + room.Y;
+                    if (IsWalkable(x, y))
+                    {
+                        return new Point(x, y);
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool DoesRoomHaveWalkableSpace(Rectangle room)
+        {
+            for (int x = 1; x <= room.Width - 2; x++)
+            {
+                for (int y = 1; y <= room.Height - 2; y++)
+                {
+                    if (IsWalkable(x + room.X, y + room.Y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
 
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
         {
@@ -101,10 +157,9 @@ namespace RLNETConsoleGame.Core
             return false;
         }
 
-        public void SetIsWalkable(int x, int y, bool isWalkable)        // this bool method helps set the isWalkable property on a cell being true or false 
-        {
-            Cell cell = (Cell)GetCell(x, y);
-            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
-        }
+       
+
+
+        
     }
 }

@@ -24,5 +24,6 @@ namespace RLNETConsoleGame.Core
         public static RLColor Gold = Palatte.DbSun;
 
         public static RLColor Player = Palatte.DbLight;
+        public static RLColor KoboldColor = Palatte.DbBrightWood;
     }
 }
