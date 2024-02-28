@@ -43,7 +43,7 @@ namespace RLNETConsoleGame
 
         private static bool _renderRequired = true;
 
-        private static int _steps = 0;                      //for testing MessageLog purposes *NOT FOR PRODUCTION*
+        //private static int _steps = 0;                      //for testing MessageLog purposes *NOT FOR PRODUCTION*
         public static Player Player { get; set; }
         public static DungeonMap DungeonMap { get; private set; }
         public static CommandSystem CommandSystem { get; private set; }
@@ -120,7 +120,7 @@ namespace RLNETConsoleGame
             }
             if (didPlayerAct)
             {
-                MessageLog.Add($"Step # {++_steps}");
+                //MessageLog.Add($"Step # {++_steps}");     this is MessageLog testing *NOT FOR PRODUCTION*
                 _renderRequired = true;
             }
 
@@ -133,8 +133,8 @@ namespace RLNETConsoleGame
             //_messagesConsole.Print(1, 1, "Messages", Colors.TextHeading);        // color here is taken from the palatte.cs
             
 
-            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Palatte.DbOldStone);
-            _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
+            //_statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Palatte.DbOldStone);
+            //_statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
 
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palatte.DbWood);
             _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
@@ -147,6 +147,7 @@ namespace RLNETConsoleGame
              DungeonMap.Draw(_mapConsole);
             Player.Draw(_mapConsole, DungeonMap);
              MessageLog.Draw(_messagesConsole);
+                Player.DrawStats(_statsConsole);
                 
 
             // this block of code transfers the information from the sub consoles to RootConsole (BLIT)
