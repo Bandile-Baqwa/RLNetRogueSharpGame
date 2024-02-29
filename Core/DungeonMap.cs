@@ -19,16 +19,26 @@ namespace RLNETConsoleGame.Core
         }
 
         // this draw method will be called everytime the map is updated and wil render all the items 
-        public void Draw(RLConsole mapConsole)
+        public void Draw(RLConsole mapConsole, RLConsole statConsole)
         {
-            mapConsole.Clear();
+            //mapConsole.Clear();
             foreach (Cell cell in GetAllCells())        // this loop makes the bottom method happen for every cell
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
+
+            int i = 0;
+
             foreach (Monster monster in _monsters)      //this iterates thru all the monsters on the map after the cells have been  drawn above
             {
                 monster.Draw(mapConsole, this);
+
+                //this will show the stats of the monsters in FOV
+                if (IsInFov(monster.X, monster.Y))
+                {
+                    monster.DrawStats(statConsole, i);
+                    i++;
+                }
             }
 
         }

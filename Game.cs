@@ -144,7 +144,12 @@ namespace RLNETConsoleGame
         {
             if (_renderRequired)
             {
-             DungeonMap.Draw(_mapConsole);
+                _mapConsole.Clear();
+                _statsConsole.Clear();
+                _messagesConsole.Clear();
+
+             DungeonMap.Draw(_mapConsole,_statsConsole);
+             
             Player.Draw(_mapConsole, DungeonMap);
              MessageLog.Draw(_messagesConsole);
                 Player.DrawStats(_statsConsole);
