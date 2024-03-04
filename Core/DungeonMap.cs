@@ -58,6 +58,13 @@ namespace RLNETConsoleGame.Core
             
         }
 
+        public void RemoveMonsters(Monster monster)
+        {
+            _monsters.Remove(monster);
+            SetIsWalkable(monster.X, monster.Y, true);  // this is set to true because the monster would of been killed and removed for the map so the cell will be walkable again 
+        }
+
+
         public void SetIsWalkable(int x, int y, bool isWalkable)        // this bool method helps set the isWalkable property on a cell being true or false 
         {
             Cell cell = (Cell)GetCell(x, y);
@@ -81,6 +88,12 @@ namespace RLNETConsoleGame.Core
                 }
             }
             return null;
+        }
+
+        public Monster GetMonsterAt(int x, int y)
+        {
+            //the type of this lambda expression is a Func<Monster, bool> of type Monster
+            return _monsters.FirstOrDefault(m => m.X == x && m.Y == y); //basically Monster => monster.X == int x && monster.Y == int y 
         }
 
         public bool DoesRoomHaveWalkableSpace(Rectangle room)

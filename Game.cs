@@ -150,9 +150,9 @@ namespace RLNETConsoleGame
 
              DungeonMap.Draw(_mapConsole,_statsConsole);
              
-            Player.Draw(_mapConsole, DungeonMap);
+             Player.Draw(_mapConsole, DungeonMap);
              MessageLog.Draw(_messagesConsole);
-                Player.DrawStats(_statsConsole);
+             Player.DrawStats(_statsConsole);
                 
 
             // this block of code transfers the information from the sub consoles to RootConsole (BLIT)
