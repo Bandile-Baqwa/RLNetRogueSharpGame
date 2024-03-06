@@ -47,7 +47,6 @@ namespace RLNETConsoleGame.Systems
             {
                 return true;
             }
-            return false;
 
             Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
             if (monster != null)
@@ -55,6 +54,9 @@ namespace RLNETConsoleGame.Systems
                 Attack(Game.Player, monster);
                 return true;
             }
+
+            return false;
+
         }
 
         public void Attack(Actor attacker, Actor defender)
@@ -155,7 +157,7 @@ namespace RLNETConsoleGame.Systems
             else if (defender is Monster)
             {
                 Game.DungeonMap.RemoveMonsters((Monster)defender);
-                Game.MessageLog.Add($"You Killed a {defender.Name} and it dropped {defender.Gold} Gold");
+                Game.MessageLog.Add($"You put {defender.Name} on a T-shirt and it dropped {defender.Gold} Gold");
             }
         }
         }

@@ -58,6 +58,12 @@ namespace RLNETConsoleGame.Core
             
         }
 
+        public Monster GetMonsterAt(int x, int y)
+        {
+            //the type of this lambda expression is a Func<Monster, bool> of type Monster
+            return _monsters.FirstOrDefault(m => m.X == x && m.Y == y); //basically Monster => monster.X == int x && monster.Y == int y 
+        }
+
         public void RemoveMonsters(Monster monster)
         {
             _monsters.Remove(monster);
@@ -88,12 +94,6 @@ namespace RLNETConsoleGame.Core
                 }
             }
             return null;
-        }
-
-        public Monster GetMonsterAt(int x, int y)
-        {
-            //the type of this lambda expression is a Func<Monster, bool> of type Monster
-            return _monsters.FirstOrDefault(m => m.X == x && m.Y == y); //basically Monster => monster.X == int x && monster.Y == int y 
         }
 
         public bool DoesRoomHaveWalkableSpace(Rectangle room)
