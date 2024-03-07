@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RLNETConsoleGame.Core
 {
-    public class Actor : IActor, IDrawable
+    public class Actor : IActor, IDrawable, IScheduleable
     {
         //these are the implementaions from IDrawable
         public RLColor Color { get; set; }
@@ -156,6 +156,14 @@ namespace RLNETConsoleGame.Core
                 console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');      //draw the normal color and floor symbol of floor outside of FOV
             }
 
+        }
+
+        public int Time //implementation of ITiming
+        {
+            get
+            {
+                return Speed;
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using OpenTK.Graphics.ES20;
 using RLNETConsoleGame.Core;
+using RLNETConsoleGame.Interfaces;
+using RogueSharp;
 using RogueSharp.DiceNotation;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,9 @@ namespace RLNETConsoleGame.Systems
 {
     public class CommandSystem
     {
+        public bool IsPlayerTurn { get; set; }
+
+       
         public bool MovePlayer(Direction direction)     // return true if the player was abel to moveand reutrn false if not ie hit a wall or seomthing 
         {
             int x = Game.Player.X;
@@ -57,6 +62,42 @@ namespace RLNETConsoleGame.Systems
 
             return false;
 
+        }
+
+        public void EndPlayerTurn()
+        {
+            IsPlayerTurn = false;
+        }
+
+        public void ActivateMonsters()      // this will kick in when the players turn is done
+        {
+            IScheduleable scheduleable = Game.SchedulingSystem.Get();
+            if (scheduleable is Player)
+            {
+                IsPlayerTurn = true;
+                Game.SchedulingSystem.Add(Game.Player);
+            }
+            else
+            {
+                Monster monster = scheduleable as Monster;
+                if (monster != null)
+                {
+                    monster.PerformAction(this);
+                    Game.SchedulingSystem.Add(monster);
+                }
+                ActivateMonsters();
+            }
+        }
+
+        public void MoveMonster(Monster monster, ICell cell)
+        {
+            if (!Game.DungeonMap.SetActorPosition(monster, cell.X, cell.Y))
+            {
+                if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
+                {
+                    Attack(monster, Game.Player);
+                }
+            }
         }
 
         public void Attack(Actor attacker, Actor defender)
@@ -160,6 +201,6 @@ namespace RLNETConsoleGame.Systems
                 Game.MessageLog.Add($"You put {defender.Name} on a T-shirt and it dropped {defender.Gold} Gold");
             }
         }
-        }
     }
+}
 

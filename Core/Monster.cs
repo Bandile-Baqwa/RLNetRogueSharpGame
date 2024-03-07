@@ -4,13 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RLNET;
+using RLNETConsoleGame.Behaviors;
 using RLNETConsoleGame.Core;
-using RogueSharp;
+using RLNETConsoleGame.Systems;
+
 
 namespace RLNETConsoleGame.Core
 {
     public class Monster : Actor
     {
+        public int? TurnsAlerted { get; set; }      //able to be nullable so that the monster can be "unalerted"
+
+       
         public void DrawStats(RLConsole statConsole, int position)
         {
             //starting at Y = 13 because if you look at Player.Drawstats() youll see the last player stat is Y = 9
@@ -30,5 +35,13 @@ namespace RLNETConsoleGame.Core
             //this will print the monster name over the top of the health bar 
             statConsole.Print(2, yPosition, $": {Name}", Palatte.DbLight);
         }
+
+        //simce this is virtual and in monster all monsters will have this by default, Override switch can be used to add in tailor made monster actions 
+        public virtual void PerformAction(CommandSystem commandSystem)
+        {
+            var behavior = new StandardMoveAndAttack();
+            behavior.Act(this, commandSystem);
+        }
+
     }
 }

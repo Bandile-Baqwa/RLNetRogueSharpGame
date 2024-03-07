@@ -49,11 +49,13 @@ namespace RLNETConsoleGame
         public static CommandSystem CommandSystem { get; private set; }
         public static MessageLog MessageLog { get; private set; }
         public static IRandom Random { get; set; }      //this will be used thru out the game to generate random numbers (rogueSharp - Singleton )
+        public static SchedulingSystem SchedulingSystem { get; private set; }
 
         public static void Main()
         {
             int seed = (int)DateTime.UtcNow.Ticks;     //this establishes the seed for the random number gnerator from the current time
             Random = new DotNetRandom(seed);        // this will produce a unique seed everytime a new game is stared 
+            
 
             //the title name will includde the seed used to generate the level
             string consoleTitle = $"Bandiles RLNet Console - Level 1 - Seed{seed}";
@@ -75,7 +77,9 @@ namespace RLNETConsoleGame
             _statsConsole = new RLConsole(_statsWidth, _statsHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
-            
+            SchedulingSystem = new SchedulingSystem();
+
+
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7);    //the numbers are the paramerters for the Max Rooms and Size and Min size
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
@@ -94,33 +98,41 @@ namespace RLNETConsoleGame
         {
             bool didPlayerAct = false;
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();          // this links the keyboard presses to the players movemenmts and COmmandSystem.MovePlayer() handels all the movement
-
-            if (keyPress != null)
+            if (CommandSystem.IsPlayerTurn)
             {
-                if (keyPress.Key == RLKey.Up)
+                if (keyPress != null)
                 {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                    if (keyPress.Key == RLKey.Up)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                    }
+                    else if (keyPress.Key == RLKey.Down)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                    }
+                    else if (keyPress.Key == RLKey.Left)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                    }
+                    else if (keyPress.Key == RLKey.Right)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                    }
+                    else if (keyPress.Key == RLKey.Escape)
+                    {
+                        _rootConsole.Close();
+                    }
                 }
-                else if (keyPress.Key == RLKey.Down)
+                if (didPlayerAct)
                 {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-                }
-                else if (keyPress.Key == RLKey.Left)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-                }
-                else if (keyPress.Key == RLKey.Right)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-                }
-                else if (keyPress.Key == RLKey.Escape)
-                {
-                    _rootConsole.Close();
+                    //MessageLog.Add($"Step # {++_steps}");     this is MessageLog testing *NOT FOR PRODUCTION*
+                    _renderRequired = true;
+                    CommandSystem.EndPlayerTurn();
                 }
             }
-            if (didPlayerAct)
+            else
             {
-                //MessageLog.Add($"Step # {++_steps}");     this is MessageLog testing *NOT FOR PRODUCTION*
+                CommandSystem.ActivateMonsters();
                 _renderRequired = true;
             }
 

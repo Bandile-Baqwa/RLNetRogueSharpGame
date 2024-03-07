@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RLNETConsoleGame.Interfaces
 {
-     public interface ITiming
+     public interface IScheduleable
     {
         int Time { get; }
     }

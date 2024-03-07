@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,11 @@ namespace RLNETConsoleGame.Core
         public static RLColor Wall = Palatte.Secondary;
         public static RLColor WallBackgroundFov = Palatte.SecondaryDarker;
         public static RLColor WallFov = Palatte.SecondaryLighter;
+
+        public static RLColor DoorBackground = Palatte.ComplimentDarkest;
+        public static RLColor Door = Palatte.ComplimentLighter;
+        public static RLColor DoorBackgroundFov = Palatte.ComplimentDarker;
+        public static RLColor DoorFov = Palatte.ComplimentLightest;
 
         public static RLColor TextHeading = Palatte.DbLight;
         public static RLColor Text = Palatte.DbLightText;
