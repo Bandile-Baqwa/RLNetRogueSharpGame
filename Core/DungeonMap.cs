@@ -11,12 +11,15 @@ namespace RLNETConsoleGame.Core
     public class DungeonMap : Map    // this map that  was inherited from  using RogueSharp 
     {
         public readonly List<Monster> _monsters;
-        public List<Rectangle> Rooms;
+        public List<Rectangle> Rooms { get; set; }
+        public List<Door> Doors { get; set; }
         public DungeonMap()                 //this jsut initializes the new list of rooms & monsters when the map is created 
         {
             _monsters = new List<Monster>();
             Rooms = new List<Rectangle>();
+            Doors = new List<Door>();
         }
+
 
         public void UpdatePlayerFieldOfView()       // this is created so every time you move the player the FOV is updated 
         {
@@ -43,6 +46,7 @@ namespace RLNETConsoleGame.Core
                 actor.Y = y;
 
                 SetIsWalkable(actor.X, actor.Y, false); //the actors current cell position is not walkable 
+                OpenDoor(actor, x, y);                  //this will try open a door if one exists 
 
                 if (actor is Player)                //if the player is repositioned then we have to update the Players FOV
                 {
@@ -51,6 +55,24 @@ namespace RLNETConsoleGame.Core
                 return true;
             }
             return false;
+           
+        }
+
+        public Door GetDoor(int x, int y)
+        {
+            return Doors.SingleOrDefault(d => d.X == x && d.Y == y);        //the lambda populates the TSource here 
+        }
+
+        public void OpenDoor(Actor actor, int x, int y)
+        {
+            Door door = GetDoor(x, y);
+            if (door != null && !door.IsOpen)
+            {
+                door.IsOpen = true;
+                var cell = GetCell(x, y);
+                SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
+                Game.MessageLog.Add($"{actor.Name} busted the door open !");
+            }
         }
 
         public void AddPlayer(Player player)
@@ -76,6 +98,9 @@ namespace RLNETConsoleGame.Core
             Game.SchedulingSystem.Remove(monster);
         }
 
+        
+
+       
 
         public Monster GetMonsterAt(int x, int y)
         {
@@ -88,6 +113,8 @@ namespace RLNETConsoleGame.Core
             Cell cell = (Cell)GetCell(x, y);
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
         }
+
+        
 
         //this looks for a random place in the room thats walkable so the monster can spawn there 
         public Point? GetRandomWalkableLocationInRoom(Rectangle room)
@@ -131,6 +158,11 @@ namespace RLNETConsoleGame.Core
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
 
+            foreach (Door door in Doors)
+            {
+                door.Draw(mapConsole, this);
+            }
+
             int i = 0;
 
             foreach (Monster monster in _monsters)      //this iterates thru all the monsters on the map after the cells have been  drawn above
@@ -144,6 +176,8 @@ namespace RLNETConsoleGame.Core
                     i++;
                 }
             }
+
+            
 
         }
 

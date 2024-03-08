@@ -79,10 +79,103 @@ namespace RLNETConsoleGame.Systems
             foreach (Rectangle room in _map.Rooms)
             {
                 CreateRoom(room);
+                CreateDoors(room);
             }
             PlacePlayer();
             PlaceMonsters();
             return _map;
+        }
+
+        
+
+        private void CreateRoom(Rectangle room)
+        {
+            for (int x = room.Left + 1; x < room.Right; x++)
+            {
+                for (int y = room.Top + 1; y < room.Bottom; y++)
+                {
+                    _map.SetCellProperties(x , y , true, true, false);   // thisi set the properties of the cell to be true in any given rectangular area on the map
+                }                                               //set to false so that the rooms dont show before you can explore them 
+            }
+
+        }
+
+        private void CreateHorizontalTunnel(int xStart, int xEnd, int yPosition)
+        {
+            for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
+            {
+                _map.SetCellProperties(x, yPosition, true, true);
+            }
+        }
+                                                                            //code above and below place tunnels horizonally and vertiacally 
+        private void CreateVerticalTunnel(int yStart, int yEnd,int xPosition)
+        {
+            for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
+            {
+                _map.SetCellProperties(xPosition, y, true, true);
+            }
+        }
+
+        private void CreateDoors(Rectangle room)
+        {
+            //these are the rooms boundries
+            int xMin = room.Left;
+            int xMax = room.Right;
+            int yMin = room.Top;
+            int yMax = room.Bottom;
+
+            //putting the Room border cells into a list 
+            // the directly below line of code is an explicit convertion from RogueSharp.ICell to RogueSharp.Cell 
+            List<RogueSharp.Cell> borderCells = _map.GetCellsAlongLine(xMin, yMin, xMax, yMin).Cast<RogueSharp.Cell>().ToList();
+                                                                                           //Cast<RogueSharp.Cell>() makes sure each .ICell is treated like a .Cell
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMin, xMin, yMax).Cast<RogueSharp.Cell>());
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMax, xMax, yMax).Cast<RogueSharp.Cell>());
+            borderCells.AddRange(_map.GetCellsAlongLine(xMax, yMin, xMax, yMax).Cast<RogueSharp.Cell>());
+
+            foreach (Cell cell in borderCells)
+            {
+                if (IsPotentialDoor(cell))
+                {
+                    _map.SetCellProperties(cell.X, cell.Y, false, true);
+                    _map.Doors.Add(new Door
+                    {
+                        X = cell.X,
+                        Y = cell.Y,
+                        IsOpen = false
+                    });
+                }
+            }
+
+        }
+        //this will check to see if the cell will be a good candidate for a dooor
+        private bool IsPotentialDoor(Cell cell)
+        {
+            if (!cell.IsWalkable)       //if cell is not walkable it will not be a good candidate for a door
+            {
+                return false;
+            }
+
+            //this will store all the references to all the neighboring cells
+            Cell right = (Cell)_map.GetCell(cell.X + 1, cell.Y);
+            Cell left = (Cell)_map.GetCell(cell.X - 1, cell.Y);
+            Cell top = (Cell)_map.GetCell(cell.X, cell.Y - 1);
+            Cell bottom = (Cell)_map.GetCell(cell.X, cell.Y + 1);
+
+            //to make sure that the door isnt created on top of another door
+            if(_map.GetDoor(cell.X,cell.Y) != null || _map.GetDoor(right.X, right.Y) != null || _map.GetDoor(left.X, left.Y) != null || _map.GetDoor(top.X, top.Y) != null || _map.GetDoor(bottom.X, bottom.Y) != null)
+            {
+                return false;
+            }
+
+            if (right.IsWalkable && left.IsWalkable && !top.IsWalkable && !bottom.IsWalkable)
+            {
+                return true;
+            }
+            if (!right.IsWalkable && !left.IsWalkable && top.IsWalkable && bottom.IsWalkable)
+            {
+                return true;
+            }
+            return false;
         }
 
         private void PlacePlayer()
@@ -126,34 +219,6 @@ namespace RLNETConsoleGame.Systems
                 }
             }
 
-        }
-
-        private void CreateRoom(Rectangle room)
-        {
-            for (int x = room.Left + 1; x < room.Right; x++)
-            {
-                for (int y = room.Top + 1; y < room.Bottom; y++)
-                {
-                    _map.SetCellProperties(x , y , true, true, false);   // thisi set the properties of the cell to be true in any given rectangular area on the map
-                }                                               //set to false so that the rooms dont show before you can explore them 
-            }
-
-        }
-
-        private void CreateHorizontalTunnel(int xStart, int xEnd, int yPosition)
-        {
-            for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
-            {
-                _map.SetCellProperties(x, yPosition, true, true);
-            }
-        }
-                                                                            //code above and below place tunnels horizonally and vertiacally 
-        private void CreateVerticalTunnel(int yStart, int yEnd,int xPosition)
-        {
-            for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
-            {
-                _map.SetCellProperties(xPosition, y, true, true);
-            }
         }
     }
 
