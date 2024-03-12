@@ -13,8 +13,12 @@ namespace RLNETConsoleGame.Core
         public readonly List<Monster> _monsters;
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
+        public Stairs StairsUp { get; set; }
+        public Stairs StairsDown { get; set; }
         public DungeonMap()                 //this jsut initializes the new list of rooms & monsters when the map is created 
         {
+            Game.SchedulingSystem.Clear();  //this will clear all the monsters so when you change floors they wont follow you or try to act
+
             _monsters = new List<Monster>();
             Rooms = new List<Rectangle>();
             Doors = new List<Door>();
@@ -63,6 +67,8 @@ namespace RLNETConsoleGame.Core
             return Doors.SingleOrDefault(d => d.X == x && d.Y == y);        //the lambda populates the TSource here 
         }
 
+       
+
         public void OpenDoor(Actor actor, int x, int y)
         {
             Door door = GetDoor(x, y);
@@ -106,6 +112,12 @@ namespace RLNETConsoleGame.Core
         {
             //the type of this lambda expression is a Func<Monster, bool> of type Monster
             return _monsters.FirstOrDefault(m => m.X == x && m.Y == y); //basically Monster => monster.X == int x && monster.Y == int y 
+        }
+
+        public bool CanMoveDownToNextLevel()
+        {
+            Player player = Game.Player;
+            return StairsDown.X == player.X && StairsDown.Y == player.Y;
         }
 
         public void SetIsWalkable(int x, int y, bool isWalkable)        // this bool method helps set the isWalkable property on a cell being true or false 
@@ -162,6 +174,10 @@ namespace RLNETConsoleGame.Core
             {
                 door.Draw(mapConsole, this);
             }
+
+            //StairsUp.Draw(mapConsole, this);
+            StairsDown.Draw(mapConsole, this);
+
 
             int i = 0;
 

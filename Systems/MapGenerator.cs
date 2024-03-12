@@ -17,17 +17,19 @@ namespace RLNETConsoleGame.Systems
         private readonly int _maxRooms;
         private readonly int _roomMaxSize;
         private readonly int _roomMinSize;
+        private readonly int _mapLevel;
 
         private readonly DungeonMap _map;
 
         // constructing a new MapGenerator requires the demensions of the maps it will create
-        public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize)
+        public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, int mapLevel)
         {
             _width = width;
             _height = height;
             _maxRooms = maxRooms;
             _roomMaxSize = roomMaxSize;
             _roomMinSize = roomMinSize;
+            _mapLevel = mapLevel;
             _map = new DungeonMap();
         }
         public DungeonMap CreateMap()
@@ -81,6 +83,7 @@ namespace RLNETConsoleGame.Systems
                 CreateRoom(room);
                 CreateDoors(room);
             }
+            CreateStairs();
             PlacePlayer();
             PlaceMonsters();
             return _map;
@@ -147,6 +150,8 @@ namespace RLNETConsoleGame.Systems
             }
 
         }
+
+       
         //this will check to see if the cell will be a good candidate for a dooor
         private bool IsPotentialDoor(Cell cell)
         {
@@ -180,17 +185,27 @@ namespace RLNETConsoleGame.Systems
 
         private void PlacePlayer()
         {
-            Player player = Game.Player;
-
-            if (player == null)
-            {
-                player = new Player();
-            }
-
-            player.X = _map.Rooms[0].Center.X;  //this adds player to the center of the first room in the list of Rooms of type rectangle
-            player.Y = _map.Rooms[0].Center.Y;  //X and Y coordineates
+            Player player = Game.Player ?? new Player();        //chancged from an if statment
+            player.X = _map.Rooms[0].Center.X;              //this adds player to the center of the first room in the list of Rooms of type rectangle
+            player.Y = _map.Rooms[0].Center.Y;                   //X and Y coordineates
 
             _map.AddPlayer(player);
+        }
+
+        private void CreateStairs()     // this will create the stairs in the ceenter of each room theyre in 
+        {
+            _map.StairsUp = new Stairs()
+            {
+                X = _map.Rooms[0].Center.X + 1,
+                Y = _map.Rooms[0].Center.Y,
+                IsUp = true
+            };
+            _map.StairsDown = new Stairs
+            {
+                X = _map.Rooms[0].Center.X + 1,
+                Y = _map.Rooms[0].Center.Y,
+                IsUp = false
+            };
         }
 
         private void PlaceMonsters()

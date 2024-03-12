@@ -41,6 +41,7 @@ namespace RLNETConsoleGame
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
 
+        private static int _mapLevel = 1;
         private static bool _renderRequired = true;
 
         //private static int _steps = 0;                      //for testing MessageLog purposes *NOT FOR PRODUCTION*
@@ -55,10 +56,9 @@ namespace RLNETConsoleGame
         {
             int seed = (int)DateTime.UtcNow.Ticks;     //this establishes the seed for the random number gnerator from the current time
             Random = new DotNetRandom(seed);        // this will produce a unique seed everytime a new game is stared 
-            
 
             //the title name will includde the seed used to generate the level
-            string consoleTitle = $"Bandiles RLNet Console - Level 1 - Seed{seed}";
+            string consoleTitle = $"Bandiles RLNet Console - Level {_mapLevel} - Seed{seed}";
 
             //create a new MessageLog and print the random seeed to generate the level
             MessageLog = new MessageLog();
@@ -80,7 +80,7 @@ namespace RLNETConsoleGame
             SchedulingSystem = new SchedulingSystem();
 
 
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7);    //the numbers are the paramerters for the Max Rooms and Size and Min size
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7, _mapLevel);    //the numbers are the paramerters for the Max Rooms and Size and Min size
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
             CommandSystem = new CommandSystem();
@@ -121,6 +121,18 @@ namespace RLNETConsoleGame
                     else if (keyPress.Key == RLKey.Escape)
                     {
                         _rootConsole.Close();
+                    }
+                    else if (keyPress.Key == RLKey.Period)
+                    {
+                        if (DungeonMap.CanMoveDownToNextLevel())
+                        {
+                            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, ++_mapLevel);
+                            DungeonMap = mapGenerator.CreateMap();
+                            MessageLog = new MessageLog();
+                            CommandSystem = new CommandSystem();
+                            _rootConsole.Title = $"Bandile's RLNet Console - Level {_mapLevel}";
+                            didPlayerAct = true;
+                        }
                     }
                 }
                 if (didPlayerAct)
