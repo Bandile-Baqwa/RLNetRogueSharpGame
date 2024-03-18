@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RLNETConsoleGame.Monsters
 {
-    internal class Police
+    public class Police
     {
     }
 }
