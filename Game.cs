@@ -65,9 +65,6 @@ namespace RLNETConsoleGame
             MessageLog.Add("Agent Bands arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
-            //juat linkiing up the bitmap file
-            //string fontFileName = "C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\Bitmap\\terminal8x8.bmp";
-
             //telling the RLNet to use the bitmap and setting the dimentions for the tile which are 8x8
             _rootConsole = new RLRootConsole("C:\\Users\\bsbaq\\source\\repos\\RLNETConsoleGame\\terminal8x8.png", _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
 
@@ -97,6 +94,7 @@ namespace RLNETConsoleGame
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
             bool didPlayerAct = false;
+            var storeItems = new Store();
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();          // this links the keyboard presses to the players movemenmts and COmmandSystem.MovePlayer() handels all the movement
             if (CommandSystem.IsPlayerTurn)
             {
@@ -121,6 +119,10 @@ namespace RLNETConsoleGame
                     else if (keyPress.Key == RLKey.Escape)
                     {
                         _rootConsole.Close();
+                    }
+                    else if(keyPress.Key == RLKey.S)
+                    {
+                        storeItems.DisplayStoreItems();
                     }
                     else if (keyPress.Key == RLKey.Period)
                     {
